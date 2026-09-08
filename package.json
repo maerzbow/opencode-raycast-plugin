@@ -1,0 +1,61 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "opencode-go",
+  "title": "OpenCode Go",
+  "description": "OpenCode Go subscription usage — limit windows, model catalog, and daily picks.",
+  "icon": "icon.png",
+  "author": "maerzbow",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "opencode-go",
+      "title": "OpenCode Go",
+      "description": "OpenCode Go usage: limit windows, model catalog, and daily picks.",
+      "mode": "view",
+      "icon": "icon.png"
+    },
+    {
+      "name": "opencode-go-menu-bar",
+      "title": "OpenCode Go",
+      "description": "OpenCode Go usage in the menu bar.",
+      "mode": "menu-bar",
+      "icon": "menubar-icon.png",
+      "interval": "60s"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "goKey",
+      "title": "Go key (fallback)",
+      "description": "OpenCode Go key. Only used when ~/.local/share/opencode/auth.json has no opencode-go entry.",
+      "type": "password",
+      "required": false
+    },
+    {
+      "name": "maxModels",
+      "title": "Max catalog rows",
+      "description": "How many models to show before folding into \"other\".",
+      "type": "textfield",
+      "required": false,
+      "default": "12"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^2.2.1"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "build": "ray build -e dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true
+  }
+}

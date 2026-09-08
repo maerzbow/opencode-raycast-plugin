@@ -21,12 +21,20 @@ The live list of OpenCode Go models with current $/M pricing, sorted by cost, qu
 **Picks**:
 The daily model recommendations (stretch quota and best value), computed from current pricing.
 
+**Quota**:
+Per-model estimated request capacity for the rolling 5h window — `floor($12 ÷ costPerTurn)` with the typical-turn cost basis (830 input / 71,500 cached / 295 output tokens). Plugin-estimated, not defined by OCG.
+_Avoid_: cap, allowance
+
 **Modality**:
 A model's input/output capability — text, image, video, audio — shown as plain text (`in text, image · out text`), sourced from models.dev `modalities`.
 _Avoid_: icons for modalities
 
 **Surface**:
 One of the two places the extension renders usage: the **full view** (a normal Raycast command) or the **menu-bar command** (pill in the macOS menu bar).
+
+**Pill**:
+The menu-bar command's icon-only presence — the OpenCode logo as a template image, no text — which opens the dropdown.
+_Avoid_: text in the menu bar
 
 **Failure class**:
 The extension's four error states: **no-key**, **bad-key** (401), **no-entitlement** (403), **offline**. No-key/bad-key/no-entitlement show error states; only offline keeps last-known data.
