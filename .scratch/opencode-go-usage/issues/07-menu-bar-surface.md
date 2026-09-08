@@ -16,3 +16,7 @@ Build a rough prototype (stub menu-bar command or sketch) to react to. Resolve:
 - Which window/metric the primary text tracks (rolling 5h vs monthly) and whether it's user-configurable.
 
 Link the prototype as an asset from this ticket.
+
+## Context
+
+The failure-mode UX matrix (no-key / bad-key / no-entitlement / offline) is decided in **Auth and key handling** (issues/05) — the pill is always rendered (`--` when unconfigured); implement that here, don't re-decide it.
