@@ -25,7 +25,7 @@ export default function Command() {
       const keyProblem = isKeyProblem(result.failure.type);
       return (
         <>
-          <MenuBarExtra.Item icon={Icon.Warning} title={result.failure.message} />
+          <MenuBarExtra.Item icon={Icon.Warning} title={result.failure.message} onAction={refresh} />
           {keyProblem && (
             <MenuBarExtra.Item icon={Icon.Gear} title="Open Extension Preferences" onAction={() => openExtensionPreferences()} />
           )}
@@ -44,10 +44,18 @@ export default function Command() {
 
     return (
       <>
-        {payload.offline && <MenuBarExtra.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
+        {payload.offline && (
+          <MenuBarExtra.Item icon={Icon.Cloud} title="Offline · showing last-known data" onAction={refresh} />
+        )}
         <MenuBarExtra.Section title="Go limits">
           {rows.map((r) => (
-            <MenuBarExtra.Item key={r.key} icon={progressIcon(r.pct)} title={r.title} subtitle={r.subtitle} />
+            <MenuBarExtra.Item
+              key={r.key}
+              icon={progressIcon(r.pct)}
+              title={r.title}
+              subtitle={r.subtitle}
+              onAction={openFullView}
+            />
           ))}
         </MenuBarExtra.Section>
         <MenuBarExtra.Section title="Model catalog">
@@ -64,9 +72,12 @@ export default function Command() {
               ]
                 .filter(Boolean)
                 .join(" · ")}
+              onAction={openFullView}
             />
           ))}
-          {folded > 0 && <MenuBarExtra.Item icon={Icon.Ellipsis} title={`and ${folded} more models (folded)`} />}
+          {folded > 0 && (
+            <MenuBarExtra.Item icon={Icon.Ellipsis} title={`and ${folded} more models (folded)`} onAction={openFullView} />
+          )}
         </MenuBarExtra.Section>
         <MenuBarExtra.Separator />
         <MenuBarExtra.Item icon={Icon.RotateClockwise} title="Force refresh" onAction={refresh} />
