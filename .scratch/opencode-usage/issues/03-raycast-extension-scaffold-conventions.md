@@ -18,7 +18,7 @@ This ticket exists to decide **Raycast UI layout**; the layout-relevant componen
 
 ## Answer
 
-Findings: `.scratch/opencode-go-usage/research/extension-scaffold-conventions/findings.md`
+Findings: `.scratch/opencode-usage/research/extension-scaffold-conventions/findings.md`
 
 - Scaffold: `npm init raycast-extension -t <template>` (templates: List, Detail, Menu Bar Extra, …). Layout: `src/` + `assets/icon.png` + `package.json` (the manifest) + `tsconfig.json` + eslint/prettier. Run `npm run dev` (= `ray dev`, hot reload).
 - `@raycast/api` current `latest` = **2.2.1** (v2, React 19, Node ≥22.22.2); v1 line 1.104.x. Template convention pins `"latest"`.

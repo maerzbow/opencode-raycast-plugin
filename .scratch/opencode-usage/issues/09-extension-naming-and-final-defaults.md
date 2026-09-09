@@ -18,7 +18,7 @@ Record the decision; this is the last thing to decide before the map hands off t
 
 Decision (grilled with human, recommendations accepted):
 
-1. **Name, description, icon**: display name **"OpenCode Go"**; description **"OpenCode Go subscription usage — limit windows, model catalog, and daily picks."**; icon = the **opencode logo** — color version as the extension/command icon, monochrome template variant as the menu-bar pill image.
+1. **Name, description, icon**: display name **"opencode usage"**; description **"opencode usage — limit windows, model catalog, and daily picks."**; icon = the **opencode logo** — color version as the extension/command icon, monochrome template variant as the menu-bar pill image. The name is opencode-branded, not OpenCode-Go-branded: the extension is meant to later cover more opencode features under one identity, so "Go" appears only where it names the product (the **Go limits** section, the **Go key** preference), never in the title or description.
 2. **Catalog fold default**: a `maxModels` preference **defaulting to 12**, mirroring the reference (both surfaces reuse the fold).
 3. **Pricing cache TTL + refresh-on-open**: **pricing TTL 24h**, cached separately from usage (aligned with the daily picks recompute); **usage refreshes at the surface cadence** (menu bar 60s + on-click, full view on-open); the full view refreshes on open **only when the cached payload is older than 60s**, and never refetches pricing while its 24h TTL is warm.
 

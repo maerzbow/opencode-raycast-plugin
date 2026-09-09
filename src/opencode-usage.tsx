@@ -42,7 +42,7 @@ export default function Command() {
   const refresh = () => mutate(collectUsage(true), { shouldRevalidateAfter: false });
 
   if (!data) {
-    return <List isLoading={isLoading} searchBarPlaceholder="Loading OpenCode Go…" />;
+    return <List isLoading={isLoading} searchBarPlaceholder="Loading opencode usage…" />;
   }
 
   if (!data.ok) {
@@ -56,7 +56,7 @@ export default function Command() {
   const rows = windowRows(payload.windows, new Date());
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder="Search models, limits, picks…" navigationTitle="OpenCode Go">
+    <List isLoading={isLoading} searchBarPlaceholder="Search models, limits, picks…" navigationTitle="opencode usage">
       {payload.offline && <List.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
       <List.Section title="Go limits">
         {rows.map((r) => (

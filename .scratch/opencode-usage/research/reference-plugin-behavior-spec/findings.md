@@ -10,12 +10,12 @@ faithful behavior spec a macOS/Raycast implementer can mirror **without re-readi
 
 ## 1. The bar-widget "icon pill"
 
-Defined in `Panel.qml:57-81` (`WidgetButton`) + `assets/opencode-go-usage.{png,svg,@2x.png}`.
+Defined in `Panel.qml:57-81` (`WidgetButton`) + `assets/opencode-usage.{png,svg,@2x.png}`.
 
-- **Icon:** centered `Image` of `assets/opencode-go-usage.png`, 13 px (`Style.space(13)`), shown
+- **Icon:** centered `Image` of `assets/opencode-usage.png`, 13 px (`Style.space(13)`), shown
   only when the image loaded (`visible: status === Image.Ready`); otherwise the button's text is
   a bare `"·"` middle-dot (`Panel.qml:61`). The SVG is a white bar-chart glyph — two rounded bars
-  + a rising line with a tick — on transparent background (`assets/opencode-go-usage.svg`).
+  + a rising line with a tick — on transparent background (`assets/opencode-usage.svg`).
 - **Text:** none. `labelVisible: false`, `fixedWidth: Style.space(32)` — a fixed 32 px pill
   (`Panel.qml:62-63`). `active: false` (not highlighted as active).
 - **Hover:** `tooltipText` = `Model.tooltipLimits(service.windows, root.nowMs)` → the limit %s,
@@ -227,12 +227,12 @@ the header clock and the on-open staleness check. Picks have their own 24 h time
   - `sortBy` enum, label "Sort catalog by", options `["cost","quota","name"]`, default `"cost"`.
   Settings live in **Omarchy Settings → Widgets** (`README.md:61-65`). `intSetting` clamps to
   [min,max] and falls back on NaN (`Service.qml:28-32`).
-- **Id / registry** — manifest `id: "local.opencode-go-usage"`, `name: "OpenCode Go"`,
+- **Id / registry** — manifest `id: "local.opencode-usage"`, `name: "OpenCode Go"`,
   `version: 1.0.0`, `kinds: ["bar-widget"]`, `entryPoints.barWidget: "Panel.qml"`, category `AI`,
-  aliases `["opencode-go","opencode-go-usage","opencode-usage","go-limits"]`, `allowMultiple: false`,
+  aliases `["opencode-go","opencode-usage","opencode-usage","go-limits"]`, `allowMultiple: false`,
   `defaultSection: "right"` (`manifest.json:1-24`).
 - **IPC with the bar shell** — `Panel` base sets `moduleName` and `ipcTarget` both to
-  `"local.opencode-go-usage"` (`Panel.qml:12-14`); `root.toggle()`, `root.switchPanel(direction)`,
+  `"local.opencode-usage"` (`Panel.qml:12-14`); `root.toggle()`, `root.switchPanel(direction)`,
   and `root.close()` are Quickshell panel primitives wired through `PanelKeyCatcher`
   (`Panel.qml:93-98`). No custom IPC messages are defined.
 - **maxCatalogIds** — `clamp(maxModels·5, 50, 500)` passed to the collector as

@@ -1,4 +1,4 @@
-# Map: OpenCode Go usage for Raycast
+# Map: opencode usage for Raycast
 
 ## Destination
 
@@ -24,7 +24,7 @@ A decided, build-ready spec for one Raycast extension in this repo that surfaces
 - [Raycast UI layout](issues/06-raycast-ui-layout.md): **Catalog-first** single command wins (prototype variant C): limit windows as a pinned chip row with progress bars, model rows with text modality subtitle, cost + req/5h tags in the accessory, picks tagged inline, `other (N)` fold; modality from models.dev `modalities` (text, not icons); actions = force refresh / open prefs / copy price / open in browser; error states per the Auth and key handling matrix.
 - [Menu-bar surface](issues/07-menu-bar-surface.md): **icon-only pill** (OpenCode logo, no text, always rendered); click opens a dropdown carrying the full Catalog-first view as menu items — Go limits with progress bars, two-line model rows (full-width name; modality + cost + req/5h + pick chips wrapping on line two), `other (N)` fold, actions; refresh = 60s background interval + on click, both surfaces share one LocalStorage cache; `MenuBarExtra` renders menu items, not a list.
 - [Picks and quota parity](issues/08-picks-and-quota-parity.md): **full parity** with the reference's quota math (`floor($12 ÷ costPerTurn)`, turn = 830 in / 71.5K cache / 295 out, cache fallback 2%·in), fixed not tunable; **no exclusions** (human override) — every model eligible, picks = stretch + best value (next-highest req/5h); picks recompute lazily ≤ once/24h from current pricing; limits/catalog refresh independently at surface cadence.
-- [Extension naming and final defaults](issues/09-extension-naming-and-final-defaults.md): name "OpenCode Go", description "OpenCode Go subscription usage — limit windows, model catalog, and daily picks."; icon = opencode logo (color for commands, monochrome template for the pill); `maxModels` preference default 12 (mirrors reference); pricing cache TTL 24h (cached separately), usage at surface cadence, full view refreshes on open only if payload >60s old.
+- [Extension naming and final defaults](issues/09-extension-naming-and-final-defaults.md): name "opencode usage", description "opencode usage — limit windows, model catalog, and daily picks."; icon = opencode logo (color for commands, monochrome template for the pill); `maxModels` preference default 12 (mirrors reference); pricing cache TTL 24h (cached separately), usage at surface cadence, full view refreshes on open only if payload >60s old.
 
 ## Not yet specified
 

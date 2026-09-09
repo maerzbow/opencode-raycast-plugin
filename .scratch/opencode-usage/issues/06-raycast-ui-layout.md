@@ -24,7 +24,7 @@ The failure-mode UX matrix (no-key / bad-key / no-entitlement / offline) is deci
 
 ## Answer
 
-Prototype: `.scratch/opencode-go-usage/prototype/ui-layout-prototype.html` (3 variants, `?variant=A|B|C`). Human chose **C (Catalog-first)** as built.
+Prototype: `.scratch/opencode-usage/prototype/ui-layout-prototype.html` (3 variants, `?variant=A|B|C`). Human chose **C (Catalog-first)** as built.
 
 **Winning layout — Catalog-first, single command:**
 - One list command; models own the screen, default sort by quota (req/5h desc).

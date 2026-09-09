@@ -1,6 +1,6 @@
 # Raycast menu-bar command limits — research findings
 
-- Ticket: `.scratch/opencode-go-usage/issues/01-raycast-menu-bar-command-limits.md`
+- Ticket: `.scratch/opencode-usage/issues/01-raycast-menu-bar-command-limits.md`
 - Date researched: 2026-09-08 (docs fetched live from `developers.raycast.com` on this date)
 - API version at time of writing: `@raycast/api` **2.2.1** (latest on npm)
 - Decision this serves: **Menu-bar surface** → the refresh-cadence constraints are the payload.

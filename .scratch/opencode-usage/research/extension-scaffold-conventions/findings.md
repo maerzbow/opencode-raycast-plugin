@@ -1,6 +1,6 @@
 # Raycast extension scaffold and store conventions (2026)
 
-Ticket: `03-raycast-extension-scaffold-conventions` (`.scratch/opencode-go-usage/issues/03-raycast-extension-scaffold-conventions.md`)
+Ticket: `03-raycast-extension-scaffold-conventions` (`.scratch/opencode-usage/issues/03-raycast-extension-scaffold-conventions.md`)
 Goal: fix the Raycast UI layout for an "Open Code Go usage view" (Lists, progress, pricing data) by pinning down the current extension conventions and the layout-relevant component capabilities.
 
 Sources: official docs at `developers.raycast.com` (primary), the official `raycast/extensions` GitHub repo (templates + real store extensions), and the npm registry for current `@raycast/api` versions. Every claim below carries its source URL.

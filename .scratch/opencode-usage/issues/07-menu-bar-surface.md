@@ -23,7 +23,7 @@ The failure-mode UX matrix (no-key / bad-key / no-entitlement / offline) is deci
 
 ## Answer
 
-Prototype: `.scratch/opencode-go-usage/prototype/menu-bar-prototype.html`. Human decided:
+Prototype: `.scratch/opencode-usage/prototype/menu-bar-prototype.html`. Human decided:
 
 - **Pill = icon-only**: the OpenCode logo as a menu-bar template image, **no text**. Always rendered (per the Auth and key handling matrix, the icon is still present when unconfigured and the dropdown shows the no-key setup item).
 - **Click → dropdown = the full Catalog-first view** (as decided in **Raycast UI layout**): Go limits rows with progress bars + reset countdowns; model catalog sorted by quota with **two-line rows** — model name full-width, and a wrapping second line with modality + cost + `~N req/5h` + pick tag — so names are never truncated by the tag cluster; `other (N)` fold; actions: Force refresh, Open full view, Open Extension Preferences.

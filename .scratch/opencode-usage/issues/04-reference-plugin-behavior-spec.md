@@ -20,7 +20,7 @@ The spec you produce is the payload; it feeds **Picks & quota parity** and keeps
 
 ## Answer
 
-Full behavior spec: `.scratch/opencode-go-usage/research/reference-plugin-behavior-spec/findings.md`
+Full behavior spec: `.scratch/opencode-usage/research/reference-plugin-behavior-spec/findings.md`
 
 - **Windows are OCG-native** (from `/usage`); **quota is plugin-estimated**: per-model quota = `floor($12 ÷ costPerTurn)` where `costPerTurn = (830·in + 71500·cache + 295·out)/1e6`, cache falling back to `2%·in` (hardcoded `Model.js:192-193`).
 - **Picks:** stretch = top req/5h candidate; best value = top req/5h excluding the stretch winner (fallback `candidates[1]`); `muse-spark-1.2-contributor` excluded from picks but still listed ("trains on prompts"); recompute ≤ once/24h via `picksUpdated` timestamp.

@@ -19,7 +19,7 @@ Note in the findings which facts are version-sensitive and worth re-checking at 
 
 ## Answer
 
-Findings: `.scratch/opencode-go-usage/research/menu-bar-command-limits/findings.md`
+Findings: `.scratch/opencode-usage/research/menu-bar-command-limits/findings.md`
 
 - `MenuBarExtra` exists in `@raycast/api`; a menu-bar command is `mode: "menu-bar"` in the manifest (macOS-only). Dynamic title text and icon are supported; re-renders happen on launch, scheduled background run, menu click, Raycast restart, re-enable, or preference change — menu-bar commands are **not long-lived**.
 - **Refresh cadence:** driven by the `interval` manifest property + background refresh. Hard floor **10s** since @raycast/api v1.42.0; no documented max; scheduling is imprecise (macOS energy tolerance) and slow runs are auto-terminated. Practical floor ~30s–1m. Manifest doc still says min 1m — re-verify at build time.

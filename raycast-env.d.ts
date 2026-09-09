@@ -18,16 +18,16 @@ type ExtensionPreferences = {
 declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
-  /** Preferences accessible in the `opencode-go` command */
-  export type OpencodeGo = ExtensionPreferences & {}
-  /** Preferences accessible in the `opencode-go-menu-bar` command */
-  export type OpencodeGoMenuBar = ExtensionPreferences & {}
+  /** Preferences accessible in the `opencode-usage` command */
+  export type OpencodeUsage = ExtensionPreferences & {}
+  /** Preferences accessible in the `opencode-usage-menu-bar` command */
+  export type OpencodeUsageMenuBar = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
-  /** Arguments passed to the `opencode-go` command */
-  export type OpencodeGo = {}
-  /** Arguments passed to the `opencode-go-menu-bar` command */
-  export type OpencodeGoMenuBar = {}
+  /** Arguments passed to the `opencode-usage` command */
+  export type OpencodeUsage = {}
+  /** Arguments passed to the `opencode-usage-menu-bar` command */
+  export type OpencodeUsageMenuBar = {}
 }
 

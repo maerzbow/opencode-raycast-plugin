@@ -6,7 +6,7 @@ import { isKeyProblem } from "./lib/types";
 import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
 
 function openFullView() {
-  launchCommand({ name: "opencode-go", type: LaunchType.UserInitiated }).catch(() => undefined);
+  launchCommand({ name: "opencode-usage", type: LaunchType.UserInitiated }).catch(() => undefined);
 }
 
 export default function Command() {
@@ -77,7 +77,7 @@ export default function Command() {
   };
 
   return (
-    <MenuBarExtra icon={{ source: "menubar-icon.png" }} tooltip="OpenCode Go">
+    <MenuBarExtra icon={{ source: "menubar-icon.png" }} tooltip="opencode usage">
       {renderContent()}
     </MenuBarExtra>
   );

@@ -1,8 +1,16 @@
-# OpenCode Go usage extension
+# opencode usage extension
 
-A planned Raycast extension for macOS that surfaces the user's OpenCode Go subscription: limit windows, model catalog, and daily picks, in a full view and a menu-bar command.
+A Raycast extension for macOS that surfaces the user's opencode usage: limit windows, model catalog, and daily picks, in a full view and a menu-bar command. Branded for opencode as a product family — OpenCode Go is the subscription surface today, and future opencode features may join it under the same extension identity.
 
 ## Language
+
+**opencode**:
+The product family this extension reports on (lowercase, the brand). The extension is opencode usage, not OpenCode-Go usage; future opencode features may land under the same name.
+_Avoid_: OpenCode Go as the extension's name
+
+**OpenCode Go**:
+The subscription product whose usage the extension surfaces today — the three limit windows, the model catalog, and the daily picks. Its data is keyed `opencode-go` in opencode's auth file and models.dev.
+_Avoid_: opencode, when you mean this specific subscription
 
 **Go key**:
 The OpenCode Go credential used to authenticate against the OCG API.

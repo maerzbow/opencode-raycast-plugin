@@ -18,7 +18,7 @@ This ticket exists to decide **Auth & key handling** and to ground the data laye
 
 ## Answer
 
-Findings: `.scratch/opencode-go-usage/research/ocg-api-and-pricing-schema/findings.md`
+Findings: `.scratch/opencode-usage/research/ocg-api-and-pricing-schema/findings.md`
 
 - `GET https://opencode.ai/zen/go/v1/usage` (Bearer key) → `{"usage":{"rolling":W,"weekly":W,"monthly":W}}`; each window `W = {"status":"ok"|"rate-limited","percent":<int 0-100 used>,"resetsAt":"<ISO-8601 UTC>"}`. **No dollar amounts** — the $12/$30/$60 caps come from the docs, not the API. `percent` = floor(used/limit×100), pinned to 100 when `rate-limited`.
 - Key location: `~/.local/share/opencode/auth.json` → `["opencode-go"].key`; **macOS identical to Linux**. Schema `{"type":"api","key":…}`.
