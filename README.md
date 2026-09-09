@@ -7,6 +7,8 @@ A [Raycast](https://www.raycast.com) extension for macOS that surfaces your [ope
 
 It reports on the opencode product family. Today that is **OpenCode Go** — the subscription surface — and future opencode features may join under the same extension identity.
 
+This extension is based on the idea of [omarchy-opencode-usage](https://github.com/ardfard/omarchy-opencode-usage), a KDE Plasma widget by ardfard that surfaces the same OpenCode Go usage data.
+
 ## Features
 
 - **Limit windows** — the three OpenCode Go usage windows (rolling 5h, weekly, monthly), each with a used-percent and reset time.
