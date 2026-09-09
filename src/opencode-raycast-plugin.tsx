@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Action, ActionPanel, Clipboard, Icon, List, open, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
+import { foldModels } from "./lib/catalog";
 import { PICK_COLOR, PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
@@ -34,6 +36,7 @@ function ErrorView({ failure, onRefresh }: { failure: Failure; onRefresh: () => 
 }
 
 export default function Command() {
+  const [searchText, setSearchText] = useState("");
   const { data, isLoading, mutate } = useCachedPromise(() => collectUsage(false), [], {
     initialData: readInitialPayload(),
     keepPreviousData: true,
@@ -51,12 +54,17 @@ export default function Command() {
 
   const { payload } = data;
   const maxModels = maxModelsFromPreferences();
-  const visibleModels = payload.models.slice(0, maxModels);
-  const folded = payload.models.length - visibleModels.length;
+  const { models: visibleModels, folded } = foldModels(payload.models, maxModels, searchText);
   const rows = windowRows(payload.windows, new Date());
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder="Search models, limits, picks…" navigationTitle="opencode usage">
+    <List
+      isLoading={isLoading}
+      filtering={true}
+      onSearchTextChange={setSearchText}
+      searchBarPlaceholder="Search models, limits, picks…"
+      navigationTitle="opencode usage"
+    >
       {payload.offline && <List.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
       <List.Section title="Go limits">
         {rows.map((r) => (
@@ -110,6 +118,7 @@ export default function Command() {
           <List.Item
             icon={Icon.Ellipsis}
             title={`and ${folded} more models (folded)`}
+            subtitle="Type to search all models"
             actions={
               <ActionPanel>
                 <Action title="Force refresh" icon={Icon.RotateClockwise} onAction={refresh} />

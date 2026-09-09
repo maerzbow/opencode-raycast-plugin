@@ -1,9 +1,8 @@
 import { Icon, LaunchType, MenuBarExtra, launchCommand, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
-import { modalityText, moneyPerMillion } from "./lib/format";
+import { progressIcon, windowRows } from "./lib/display";
 import { isKeyProblem } from "./lib/types";
-import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
+import { collectUsage, readInitialPayload } from "./lib/usage";
 
 function openFullView() {
   launchCommand({ name: "opencode-raycast-plugin", type: LaunchType.UserInitiated }).catch(() => undefined);
@@ -37,9 +36,6 @@ export default function Command() {
     }
 
     const { payload } = result;
-    const maxModels = maxModelsFromPreferences();
-    const visibleModels = payload.models.slice(0, maxModels);
-    const folded = payload.models.length - visibleModels.length;
     const rows = windowRows(payload.windows, new Date());
 
     return (
@@ -57,27 +53,6 @@ export default function Command() {
               onAction={openFullView}
             />
           ))}
-        </MenuBarExtra.Section>
-        <MenuBarExtra.Section title="Model catalog">
-          {visibleModels.map((m) => (
-            <MenuBarExtra.Item
-              key={m.id}
-              icon={m.isPick ? PICK_ICON[m.isPick] : Icon.Bolt}
-              title={m.id}
-              subtitle={[
-                modalityText(m.modalities),
-                m.cost ? `${moneyPerMillion(m.cost.input)}/${moneyPerMillion(m.cost.output)}` : "",
-                m.quota != null ? `~${m.quota} req/5h` : "",
-                m.isPick ? pickLabel(m.isPick) : "",
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-              onAction={openFullView}
-            />
-          ))}
-          {folded > 0 && (
-            <MenuBarExtra.Item icon={Icon.Ellipsis} title={`and ${folded} more models (folded)`} onAction={openFullView} />
-          )}
         </MenuBarExtra.Section>
         <MenuBarExtra.Separator />
         <MenuBarExtra.Item icon={Icon.RotateClockwise} title="Force refresh" onAction={refresh} />
