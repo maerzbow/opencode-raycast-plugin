@@ -1,11 +1,11 @@
-# opencode usage extension
+# opencode-raycast-plugin
 
 A Raycast extension for macOS that surfaces the user's opencode usage: limit windows, model catalog, and daily picks, in a full view and a menu-bar command. Branded for opencode as a product family — OpenCode Go is the subscription surface today, and future opencode features may join it under the same extension identity.
 
 ## Language
 
-**opencode**:
-The product family this extension reports on (lowercase, the brand). The extension is opencode usage, not OpenCode-Go usage; future opencode features may land under the same name.
+**opencode-raycast-plugin**:
+The extension's identifier (package and command names, repo name). Its display name is **opencode usage**.
 _Avoid_: OpenCode Go as the extension's name
 
 **OpenCode Go**:

@@ -1,4 +1,4 @@
-# opencode usage
+# opencode-raycast-plugin
 
 A [Raycast](https://www.raycast.com) extension for macOS that surfaces your [opencode](https://opencode.ai) usage in two places:
 

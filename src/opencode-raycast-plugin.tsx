@@ -1,6 +1,6 @@
 import { Action, ActionPanel, Clipboard, Icon, List, open, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { PICK_COLOR, PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
+import { PICK_COLOR, PICK_ICON, barAsset, pickLabel, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
 import type { Failure } from "./lib/types";
@@ -60,7 +60,7 @@ export default function Command() {
       {payload.offline && <List.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
       <List.Section title="Go limits">
         {rows.map((r) => (
-          <List.Item key={r.key} icon={progressIcon(r.pct)} title={r.title} subtitle={r.subtitle} />
+          <List.Item key={r.key} icon={barAsset(r.pct)} title={r.title} subtitle={r.subtitle} />
         ))}
       </List.Section>
 

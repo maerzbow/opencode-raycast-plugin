@@ -1,12 +1,12 @@
 import { Icon, LaunchType, MenuBarExtra, launchCommand, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
+import { PICK_ICON, barAsset, pickLabel, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
 import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
 
 function openFullView() {
-  launchCommand({ name: "opencode-usage", type: LaunchType.UserInitiated }).catch(() => undefined);
+  launchCommand({ name: "opencode-raycast-plugin", type: LaunchType.UserInitiated }).catch(() => undefined);
 }
 
 export default function Command() {
@@ -47,7 +47,7 @@ export default function Command() {
         {payload.offline && <MenuBarExtra.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
         <MenuBarExtra.Section title="Go limits">
           {rows.map((r) => (
-            <MenuBarExtra.Item key={r.key} icon={progressIcon(r.pct)} title={r.title} subtitle={r.subtitle} />
+            <MenuBarExtra.Item key={r.key} icon={barAsset(r.pct)} title={r.title} subtitle={r.subtitle} />
           ))}
         </MenuBarExtra.Section>
         <MenuBarExtra.Section title="Model catalog">

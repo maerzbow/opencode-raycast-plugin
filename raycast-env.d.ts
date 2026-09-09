@@ -18,16 +18,16 @@ type ExtensionPreferences = {
 declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
-  /** Preferences accessible in the `opencode-usage` command */
-  export type OpencodeUsage = ExtensionPreferences & {}
-  /** Preferences accessible in the `opencode-usage-menu-bar` command */
-  export type OpencodeUsageMenuBar = ExtensionPreferences & {}
+  /** Preferences accessible in the `opencode-raycast-plugin` command */
+  export type OpencodeRaycastPlugin = ExtensionPreferences & {}
+  /** Preferences accessible in the `opencode-raycast-plugin-menu-bar` command */
+  export type OpencodeRaycastPluginMenuBar = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
-  /** Arguments passed to the `opencode-usage` command */
-  export type OpencodeUsage = {}
-  /** Arguments passed to the `opencode-usage-menu-bar` command */
-  export type OpencodeUsageMenuBar = {}
+  /** Arguments passed to the `opencode-raycast-plugin` command */
+  export type OpencodeRaycastPlugin = {}
+  /** Arguments passed to the `opencode-raycast-plugin-menu-bar` command */
+  export type OpencodeRaycastPluginMenuBar = {}
 }
 
