@@ -1,15 +1,10 @@
 import { Action, ActionPanel, Clipboard, Icon, List, open, openExtensionPreferences } from "@raycast/api";
-import { useEffect, useRef, useState } from "react";
+import { useCachedPromise } from "@raycast/utils";
 import { PICK_COLOR, PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
-import type { Failure, Payload } from "./lib/types";
-import { collectUsage, maxModelsFromPreferences } from "./lib/usage";
-
-type State =
-  | { status: "loading" }
-  | { status: "error"; failure: Failure }
-  | { status: "ready"; payload: Payload };
+import type { Failure } from "./lib/types";
+import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
 
 function ErrorView({ failure, onRefresh }: { failure: Failure; onRefresh: () => void }) {
   const keyProblem = isKeyProblem(failure.type);
@@ -39,43 +34,29 @@ function ErrorView({ failure, onRefresh }: { failure: Failure; onRefresh: () => 
 }
 
 export default function Command() {
-  const [state, setState] = useState<State>({ status: "loading" });
-  const [reloadKey, setReloadKey] = useState(0);
-  const forceRef = useRef(false);
+  const { data, isLoading, mutate } = useCachedPromise(() => collectUsage(false), [], {
+    initialData: readInitialPayload(),
+    keepPreviousData: true,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    setState({ status: "loading" });
-    collectUsage(forceRef.current).then((result) => {
-      if (cancelled) return;
-      setState(result.ok ? { status: "ready", payload: result.payload } : { status: "error", failure: result.failure });
-    });
-    forceRef.current = false;
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+  const refresh = () => mutate(collectUsage(true), { shouldRevalidateAfter: false });
 
-  const refresh = () => {
-    forceRef.current = true;
-    setReloadKey((k) => k + 1);
-  };
-
-  if (state.status === "loading") {
-    return <List isLoading={true} searchBarPlaceholder="Loading OpenCode Go…" />;
-  }
-  if (state.status === "error") {
-    return <ErrorView failure={state.failure} onRefresh={refresh} />;
+  if (!data) {
+    return <List isLoading={isLoading} searchBarPlaceholder="Loading OpenCode Go…" />;
   }
 
-  const { payload } = state;
+  if (!data.ok) {
+    return <ErrorView failure={data.failure} onRefresh={refresh} />;
+  }
+
+  const { payload } = data;
   const maxModels = maxModelsFromPreferences();
   const visibleModels = payload.models.slice(0, maxModels);
   const folded = payload.models.length - visibleModels.length;
   const rows = windowRows(payload.windows, new Date());
 
   return (
-    <List isLoading={false} searchBarPlaceholder="Search models, limits, picks…" navigationTitle="OpenCode Go">
+    <List isLoading={isLoading} searchBarPlaceholder="Search models, limits, picks…" navigationTitle="OpenCode Go">
       {payload.offline && <List.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
       <List.Section title="Go limits">
         {rows.map((r) => (

@@ -1,28 +1,26 @@
 import { Icon, LaunchType, MenuBarExtra, launchCommand, openExtensionPreferences } from "@raycast/api";
-import { useEffect, useState } from "react";
+import { useCachedPromise } from "@raycast/utils";
 import { PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
-import type { CollectResult } from "./lib/types";
-import { collectUsage, maxModelsFromPreferences } from "./lib/usage";
+import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
 
 function openFullView() {
   launchCommand({ name: "opencode-go", type: LaunchType.UserInitiated }).catch(() => undefined);
 }
 
 export default function Command() {
-  const [result, setResult] = useState<CollectResult | null>(null);
+  const { data, isLoading, mutate } = useCachedPromise(() => collectUsage(false), [], {
+    initialData: readInitialPayload(),
+    keepPreviousData: true,
+  });
 
-  useEffect(() => {
-    collectUsage(true).then(setResult);
-  }, []);
+  const refresh = () => mutate(collectUsage(true), { shouldRevalidateAfter: false });
 
-  const refresh = async () => {
-    setResult(await collectUsage(true));
-  };
+  const result = data ?? null;
 
   const renderContent = () => {
-    if (!result) return <MenuBarExtra.Item title="Loading…" onAction={refresh} />;
+    if (!result) return <MenuBarExtra.Item title={isLoading ? "Loading…" : "No data"} onAction={refresh} />;
     if (!result.ok) {
       const keyProblem = isKeyProblem(result.failure.type);
       return (

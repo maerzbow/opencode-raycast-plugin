@@ -4,7 +4,7 @@ import { picksFor, quotaFor } from "./quota";
 import type { CollectResult, Failure, Model, Payload, PricingModel, Usage } from "./types";
 
 export interface CollectorDeps {
-  resolveKey: () => string | null;
+  resolveKey: () => Promise<string | null>;
   fetchUsage: (key: string) => Promise<Usage>;
   fetchCatalog: () => Promise<string[]>;
   fetchPricing: () => Promise<PricingModel[]>;
@@ -43,7 +43,7 @@ function tagPicks(models: Model[], picks: Payload["picks"]): Model[] {
 
 export async function collect(deps: CollectorDeps, opts: CollectOptions = {}): Promise<CollectResult> {
   const now = deps.now();
-  const key = deps.resolveKey();
+  const key = await deps.resolveKey();
   if (!key) {
     return fail("no-key", "No OpenCode Go key found. Run opencode /connect, or paste a key in Extension Preferences.");
   }

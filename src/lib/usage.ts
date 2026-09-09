@@ -23,9 +23,9 @@ export function maxModelsFromPreferences(): number {
   return Number.isFinite(n) && n > 0 ? n : 12;
 }
 
-export async function collectUsage(force = false): Promise<CollectResult> {
-  const storage = await createSyncedStorage();
-  const deps: CollectorDeps = {
+function makeDeps(): CollectorDeps {
+  const storage = createSyncedStorage();
+  return {
     resolveKey: () => resolveGoKey({ authJsonPath: AUTH_JSON, prefKey: getPreferenceValues<Preferences>().goKey ?? null }),
     fetchUsage: (key) => fetchUsage(key, BASE_URL),
     fetchCatalog: () => fetchCatalog(BASE_URL),
@@ -33,9 +33,14 @@ export async function collectUsage(force = false): Promise<CollectResult> {
     cache: new UsageCache(storage),
     now: () => new Date(),
   };
-  try {
-    return await collect(deps, { force });
-  } finally {
-    await storage.flush();
-  }
+}
+
+// Synchronous read of the last-known payload — renders instantly on first paint.
+export function readInitialPayload(): CollectResult | undefined {
+  const payload = new UsageCache(createSyncedStorage()).readLastPayload();
+  return payload ? { ok: true, payload, fromCache: true } : undefined;
+}
+
+export async function collectUsage(force = false): Promise<CollectResult> {
+  return collect(makeDeps(), { force });
 }

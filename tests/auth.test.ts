@@ -21,37 +21,37 @@ function authPath(contents: string): string {
 }
 
 describe("resolveGoKey", () => {
-  it("reads the opencode-go key from auth.json", () => {
+  it("reads the opencode-go key from auth.json", async () => {
     const p = authPath(JSON.stringify({ "opencode-go": { type: "api", key: "abc123" } }));
-    expect(resolveGoKey({ authJsonPath: p, prefKey: null })).toBe("abc123");
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: null })).toBe("abc123");
   });
 
-  it("returns null when auth.json is missing and no pref is set", () => {
-    expect(resolveGoKey({ authJsonPath: join(dir, "missing.json"), prefKey: null })).toBeNull();
+  it("returns null when auth.json is missing and no pref is set", async () => {
+    expect(await resolveGoKey({ authJsonPath: join(dir, "missing.json"), prefKey: null })).toBeNull();
   });
 
-  it("falls back to the preference when auth.json has no opencode-go entry", () => {
+  it("falls back to the preference when auth.json has no opencode-go entry", async () => {
     const p = authPath(JSON.stringify({ anthropic: { key: "x" } }));
-    expect(resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
   });
 
-  it("prefers the auth.json key over the preference", () => {
+  it("prefers the auth.json key over the preference", async () => {
     const p = authPath(JSON.stringify({ "opencode-go": { key: "authed" } }));
-    expect(resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("authed");
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("authed");
   });
 
-  it("falls back to the preference on invalid JSON", () => {
+  it("falls back to the preference on invalid JSON", async () => {
     const p = authPath("{ not json ");
-    expect(resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
   });
 
-  it("treats an empty preference as absent", () => {
+  it("treats an empty preference as absent", async () => {
     const p = authPath(JSON.stringify({ some: "provider" }));
-    expect(resolveGoKey({ authJsonPath: p, prefKey: "  " })).toBeNull();
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: "  " })).toBeNull();
   });
 
-  it("treats an empty opencode-go key as absent and uses the preference", () => {
+  it("treats an empty opencode-go key as absent and uses the preference", async () => {
     const p = authPath(JSON.stringify({ "opencode-go": { key: "" } }));
-    expect(resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
+    expect(await resolveGoKey({ authJsonPath: p, prefKey: "prefkey" })).toBe("prefkey");
   });
 });

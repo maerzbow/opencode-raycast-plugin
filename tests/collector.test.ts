@@ -24,7 +24,7 @@ function buildDeps(overrides: Partial<CollectorDeps> = {}): CollectorDeps & { st
   const storage = new MemoryStorage();
   const cache = new UsageCache(storage);
   return {
-    resolveKey: vi.fn(() => "key"),
+    resolveKey: vi.fn(async () => "key"),
     fetchUsage: vi.fn(async () => USAGE),
     fetchCatalog: vi.fn(async () => ["a", "b", "c"]),
     fetchPricing: vi.fn(async () => PRICING),
@@ -66,7 +66,7 @@ describe("collect", () => {
   });
 
   it("fails with no-key and ignores the cache", async () => {
-    const deps = buildDeps({ resolveKey: vi.fn(() => null) });
+    const deps = buildDeps({ resolveKey: vi.fn(async () => null) });
     const result = await collect(deps);
     expect(result.ok).toBe(false);
     if (result.ok) return;
