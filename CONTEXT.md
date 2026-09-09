@@ -12,6 +12,13 @@ _Avoid_: OpenCode Go as the extension's name
 The subscription product whose usage the extension surfaces today — the three limit windows, the model catalog, and the daily picks. Its data is keyed `opencode-go` in opencode's auth file and models.dev.
 _Avoid_: opencode, when you mean this specific subscription
 
+**OpenCode Zen**:
+The sibling opencode-provided model surface — a catalog of tested models (70 at last count) served from `https://opencode.ai/zen/v1`, distinct from the Go subscription. No models.dev provider exists for it yet.
+_Avoid_: zed, when you mean OpenCode Zen
+
+**Product**:
+The dimension that distinguishes the opencode-provided surfaces the extension catalogs — Go and Zen. Not to be confused with **Surface**, which means the full view vs the menu bar.
+
 **Go key**:
 The OpenCode Go credential used to authenticate against the OCG API.
 _Avoid_: API key, token, secret
