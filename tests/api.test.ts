@@ -82,17 +82,33 @@ describe("fetchPricing", () => {
         "no-cost-model": {},
       },
     },
+    opencode: {
+      models: {
+        "claude-opus-5": {
+          cost: { input: 5, output: 25, cache_read: 0.5 },
+          modalities: { input: ["text", "image"], output: ["text"] },
+        },
+      },
+    },
   };
 
-  it("parses models with cost and modalities", async () => {
+  it("parses both providers into go and zen catalogs", async () => {
     mockFetch(async () => new Response(JSON.stringify(pricing), { status: 200 }));
-    const models = await fetchPricing("https://models.dev/api.json");
-    expect(models).toHaveLength(1);
-    expect(models[0]).toMatchObject({ id: "deepseek-v4-flash", cost: { input: 0.22, output: 0.66, cacheRead: 0.007 }, modalities: { input: ["text"], output: ["text"] } });
+    const catalog = await fetchPricing("https://models.dev/api.json");
+    expect(catalog.go).toHaveLength(1);
+    expect(catalog.go[0]).toMatchObject({ id: "deepseek-v4-flash", cost: { input: 0.22, output: 0.66, cacheRead: 0.007 }, modalities: { input: ["text"], output: ["text"] } });
+    expect(catalog.zen).toHaveLength(1);
+    expect(catalog.zen[0]).toMatchObject({ id: "claude-opus-5", cost: { input: 5, output: 25, cacheRead: 0.5 }, modalities: { input: ["text", "image"], output: ["text"] } });
   });
 
-  it("returns an empty list when opencode-go is absent", async () => {
+  it("returns empty catalogs when both providers are absent", async () => {
     mockFetch(async () => new Response(JSON.stringify({}), { status: 200 }));
-    await expect(fetchPricing("https://models.dev/api.json")).resolves.toEqual([]);
+    await expect(fetchPricing("https://models.dev/api.json")).resolves.toEqual({ go: [], zen: [] });
+  });
+
+  it("drops models without cost in each provider", async () => {
+    mockFetch(async () => new Response(JSON.stringify(pricing), { status: 200 }));
+    const catalog = await fetchPricing("https://models.dev/api.json");
+    expect(catalog.go.find((m) => m.id === "no-cost-model")).toBeUndefined();
   });
 });

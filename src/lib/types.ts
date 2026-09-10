@@ -39,9 +39,16 @@ export interface Picks {
   computedAt: string;
 }
 
+export type Product = "go" | "zen";
+
+export interface Catalog {
+  go: Model[];
+  zen: Model[];
+}
+
 export interface Payload {
   windows: Usage;
-  models: Model[];
+  models: Catalog;
   picks: Picks;
   updatedAt: string;
   offline: boolean;
@@ -66,4 +73,9 @@ export interface PricingModel {
   id: string;
   cost: ModelCost;
   modalities: Modality | null;
+}
+
+export interface PricingCatalog {
+  go: PricingModel[];
+  zen: PricingModel[];
 }

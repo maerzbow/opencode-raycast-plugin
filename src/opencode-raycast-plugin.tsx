@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Action, ActionPanel, Clipboard, Icon, List, open, openExtensionPreferences } from "@raycast/api";
+import { Action, ActionPanel, Clipboard, Color, Icon, List, open, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { foldModels } from "./lib/catalog";
+import { foldCatalog, type CatalogView } from "./lib/catalog";
 import { PICK_COLOR, PICK_ICON, pickLabel, progressIcon, windowRows } from "./lib/display";
 import { modalityText, moneyPerMillion } from "./lib/format";
 import { isKeyProblem } from "./lib/types";
-import type { Failure } from "./lib/types";
+import type { Failure, Model } from "./lib/types";
 import { collectUsage, maxModelsFromPreferences, readInitialPayload } from "./lib/usage";
 
 function ErrorView({ failure, onRefresh }: { failure: Failure; onRefresh: () => void }) {
@@ -35,6 +35,68 @@ function ErrorView({ failure, onRefresh }: { failure: Failure; onRefresh: () => 
   );
 }
 
+function ModelRow({ model, shared, onRefresh }: { model: Model; shared: boolean; onRefresh: () => void }) {
+  const cost = model.cost;
+  return (
+    <List.Item
+      key={model.id}
+      icon={model.isPick ? PICK_ICON[model.isPick] : Icon.Bolt}
+      title={model.id}
+      subtitle={modalityText(model.modalities)}
+      accessories={[
+        ...(shared ? [{ tag: { value: "also in Go", color: Color.Orange } }] : []),
+        ...(cost ? [{ text: `${moneyPerMillion(cost.input)}/${moneyPerMillion(cost.output)}` }] : [{ text: "—" }]),
+        ...(model.quota != null ? [{ text: `~${model.quota} req/5h` }] : []),
+        ...(model.cost !== null && model.cost.input === 0 && model.cost.output === 0
+          ? [{ tag: { value: "free", color: Color.Orange } }]
+          : []),
+        ...(model.isPick
+          ? [
+              {
+                tag: {
+                  value: pickLabel(model.isPick),
+                  color: PICK_COLOR[model.isPick],
+                },
+              },
+            ]
+          : []),
+      ]}
+      actions={
+        <ActionPanel>
+          {cost && (
+            <Action
+              title="Copy price"
+              icon={Icon.Clipboard}
+              onAction={() =>
+                Clipboard.copy(`${model.id}: ${moneyPerMillion(cost.input)} in / ${moneyPerMillion(cost.output)} out`)
+              }
+            />
+          )}
+          <Action title="Open in browser" icon={Icon.Globe} onAction={() => open("https://opencode.ai")} />
+          <Action title="Force refresh" icon={Icon.RotateClockwise} onAction={onRefresh} />
+          <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={() => openExtensionPreferences()} />
+        </ActionPanel>
+      }
+    />
+  );
+}
+
+function FoldRow({ view, onRefresh }: { view: CatalogView; onRefresh: () => void }) {
+  if (view.folded <= 0) return null;
+  return (
+    <List.Item
+      icon={Icon.Ellipsis}
+      title={`and ${view.folded} more models (folded)`}
+      subtitle="Type to search all models"
+      actions={
+        <ActionPanel>
+          <Action title="Force refresh" icon={Icon.RotateClockwise} onAction={onRefresh} />
+        </ActionPanel>
+      }
+    />
+  );
+}
+
 export default function Command() {
   const [searchText, setSearchText] = useState("");
   const { data, isLoading, mutate } = useCachedPromise(() => collectUsage(false), [], {
@@ -54,7 +116,8 @@ export default function Command() {
 
   const { payload } = data;
   const maxModels = maxModelsFromPreferences();
-  const { models: visibleModels, folded } = foldModels(payload.models, maxModels, searchText);
+  const views = foldCatalog(payload.models, maxModels, searchText);
+  const goIds = new Set(payload.models.go.map((m) => m.id));
   const rows = windowRows(payload.windows, new Date());
 
   return (
@@ -72,60 +135,18 @@ export default function Command() {
         ))}
       </List.Section>
 
-      <List.Section title="Model catalog">
-        {visibleModels.map((m) => {
-          const cost = m.cost;
-          return (
-            <List.Item
-              key={m.id}
-              icon={m.isPick ? PICK_ICON[m.isPick] : Icon.Bolt}
-              title={m.id}
-              subtitle={modalityText(m.modalities)}
-              accessories={[
-                ...(cost ? [{ text: `${moneyPerMillion(cost.input)}/${moneyPerMillion(cost.output)}` }] : []),
-                ...(m.quota != null ? [{ text: `~${m.quota} req/5h` }] : []),
-                ...(m.isPick
-                  ? [
-                      {
-                        tag: {
-                          value: pickLabel(m.isPick),
-                          color: PICK_COLOR[m.isPick],
-                        },
-                      },
-                    ]
-                  : []),
-              ]}
-              actions={
-                <ActionPanel>
-                  {cost && (
-                    <Action
-                      title="Copy price"
-                      icon={Icon.Clipboard}
-                      onAction={() =>
-                        Clipboard.copy(`${m.id}: ${moneyPerMillion(cost.input)} in / ${moneyPerMillion(cost.output)} out`)
-                      }
-                    />
-                  )}
-                  <Action title="Open in browser" icon={Icon.Globe} onAction={() => open("https://opencode.ai")} />
-                  <Action title="Force refresh" icon={Icon.RotateClockwise} onAction={refresh} />
-                  <Action title="Open Extension Preferences" icon={Icon.Gear} onAction={() => openExtensionPreferences()} />
-                </ActionPanel>
-              }
-            />
-          );
-        })}
-        {folded > 0 && (
-          <List.Item
-            icon={Icon.Ellipsis}
-            title={`and ${folded} more models (folded)`}
-            subtitle="Type to search all models"
-            actions={
-              <ActionPanel>
-                <Action title="Force refresh" icon={Icon.RotateClockwise} onAction={refresh} />
-              </ActionPanel>
-            }
-          />
-        )}
+      <List.Section title="Go models">
+        {views.go.models.map((m) => (
+          <ModelRow key={m.id} model={m} shared={false} onRefresh={refresh} />
+        ))}
+        <FoldRow view={views.go} onRefresh={refresh} />
+      </List.Section>
+
+      <List.Section title="Zen models">
+        {views.zen.models.map((m) => (
+          <ModelRow key={m.id} model={m} shared={goIds.has(m.id)} onRefresh={refresh} />
+        ))}
+        <FoldRow view={views.zen} onRefresh={refresh} />
       </List.Section>
     </List>
   );

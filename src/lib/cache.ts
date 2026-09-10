@@ -1,4 +1,4 @@
-import type { Payload, PricingModel } from "./types";
+import type { Payload, PricingCatalog, PricingModel } from "./types";
 
 export interface StorageLike {
   getItem(key: string): string | null;
@@ -19,13 +19,14 @@ export const DEFAULT_POLICY: CachePolicy = {
 };
 
 const KEYS = {
-  lastPayload: "ocg.lastPayload",
-  pricing: "ocg.pricing",
+  lastPayload: "ocg.lastPayload.v2",
+  pricing: "ocg.pricing.v2",
   picksComputedAt: "ocg.picksComputedAt",
 } as const;
 
 interface PricingEntry {
-  models: PricingModel[];
+  go: PricingModel[];
+  zen: PricingModel[];
   fetchedAt: string;
 }
 
@@ -38,6 +39,21 @@ function readJson<T>(raw: string | null): T | null {
   }
 }
 
+function isCatalog(v: unknown): v is { go: unknown[]; zen: unknown[] } {
+  return (
+    typeof v === "object" && v !== null &&
+    Array.isArray((v as { go?: unknown }).go) && Array.isArray((v as { zen?: unknown }).zen)
+  );
+}
+
+function isPricingEntry(v: unknown): v is PricingEntry {
+  return (
+    typeof v === "object" && v !== null &&
+    Array.isArray((v as { go?: unknown }).go) && Array.isArray((v as { zen?: unknown }).zen) &&
+    typeof (v as { fetchedAt?: unknown }).fetchedAt === "string"
+  );
+}
+
 export class UsageCache {
   constructor(
     private readonly storage: StorageLike,
@@ -45,7 +61,9 @@ export class UsageCache {
   ) {}
 
   readLastPayload(): Payload | null {
-    return readJson<Payload>(this.storage.getItem(KEYS.lastPayload));
+    const v = readJson<unknown>(this.storage.getItem(KEYS.lastPayload));
+    if (!isCatalog((v as { models?: unknown } | null)?.models)) return null;
+    return v as Payload;
   }
 
   writeLastPayload(payload: Payload): void {
@@ -53,11 +71,12 @@ export class UsageCache {
   }
 
   readPricing(): PricingEntry | null {
-    return readJson<PricingEntry>(this.storage.getItem(KEYS.pricing));
+    const v = readJson<unknown>(this.storage.getItem(KEYS.pricing));
+    return isPricingEntry(v) ? v : null;
   }
 
-  writePricing(models: PricingModel[], fetchedAt: string): void {
-    this.storage.setItem(KEYS.pricing, JSON.stringify({ models, fetchedAt }));
+  writePricing(pricing: PricingCatalog, fetchedAt: string): void {
+    this.storage.setItem(KEYS.pricing, JSON.stringify({ ...pricing, fetchedAt }));
   }
 
   isPricingStale(now: Date): boolean {

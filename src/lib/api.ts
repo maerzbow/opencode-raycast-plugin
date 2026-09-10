@@ -1,4 +1,4 @@
-import type { Modality, PricingModel, Usage } from "./types";
+import type { Modality, PricingCatalog, PricingModel, Usage } from "./types";
 
 export type ApiErrorKind = "bad-key" | "no-entitlement" | "offline" | "http";
 
@@ -49,9 +49,8 @@ function cleanModality(list: unknown): string[] {
   return list.filter((v): v is string => typeof v === "string" && (MODALITY_KEYS as readonly string[]).includes(v));
 }
 
-export async function fetchPricing(modelsDevUrl: string): Promise<PricingModel[]> {
-  const json = (await getJson(modelsDevUrl)) as Record<string, { models?: Record<string, unknown> }>;
-  const models = json?.["opencode-go"]?.models;
+function readProvider(json: Record<string, { models?: Record<string, unknown> }>, provider: string): PricingModel[] {
+  const models = json[provider]?.models;
   const out: PricingModel[] = [];
   for (const [id, raw] of Object.entries(models ?? {})) {
     const entry = raw as {
@@ -74,4 +73,12 @@ export async function fetchPricing(modelsDevUrl: string): Promise<PricingModel[]
     });
   }
   return out;
+}
+
+export async function fetchPricing(modelsDevUrl: string): Promise<PricingCatalog> {
+  const json = (await getJson(modelsDevUrl)) as Record<string, { models?: Record<string, unknown> }>;
+  return {
+    go: readProvider(json, "opencode-go"),
+    zen: readProvider(json, "opencode"),
+  };
 }

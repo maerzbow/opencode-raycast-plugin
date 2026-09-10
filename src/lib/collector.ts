@@ -1,13 +1,14 @@
 import { ApiError } from "./api";
 import { UsageCache } from "./cache";
 import { picksFor, quotaFor } from "./quota";
-import type { CollectResult, Failure, Model, Payload, PricingModel, Usage } from "./types";
+import type { Catalog, CollectResult, Failure, Model, Payload, PricingCatalog, PricingModel, Usage } from "./types";
 
 export interface CollectorDeps {
   resolveKey: () => Promise<string | null>;
   fetchUsage: (key: string) => Promise<Usage>;
-  fetchCatalog: () => Promise<string[]>;
-  fetchPricing: () => Promise<PricingModel[]>;
+  fetchGoCatalog: () => Promise<string[]>;
+  fetchZenCatalog: () => Promise<string[]>;
+  fetchPricing: () => Promise<PricingCatalog>;
   cache: UsageCache;
   now: () => Date;
 }
@@ -20,12 +21,12 @@ function fail(type: Failure["type"], message: string): CollectResult {
   return { ok: false, failure: { type, message } };
 }
 
-function buildModels(ids: string[], pricing: PricingModel[]): Model[] {
+function buildModels(ids: string[], pricing: PricingModel[], withQuota: boolean): Model[] {
   const byId = new Map(pricing.map((p) => [p.id, p]));
   return ids.map((id) => {
     const p = byId.get(id);
     if (!p) return { id, cost: null, modalities: null, quota: null, isPick: null };
-    return { id, cost: p.cost, modalities: p.modalities, quota: quotaFor(p.cost), isPick: null };
+    return { id, cost: p.cost, modalities: p.modalities, quota: withQuota ? quotaFor(p.cost) : null, isPick: null };
   });
 }
 
@@ -67,14 +68,21 @@ export async function collect(deps: CollectorDeps, opts: CollectOptions = {}): P
     return fail("offline", "Can't reach the OpenCode Go API.");
   }
 
-  let ids: string[];
+  let goIds: string[];
   try {
-    ids = await deps.fetchCatalog();
+    goIds = await deps.fetchGoCatalog();
   } catch {
-    ids = deps.cache.readLastPayload()?.models.map((m) => m.id) ?? [];
+    goIds = deps.cache.readLastPayload()?.models.go.map((m) => m.id) ?? [];
   }
 
-  let pricing = deps.cache.readPricing()?.models ?? [];
+  let zenIds: string[];
+  try {
+    zenIds = await deps.fetchZenCatalog();
+  } catch {
+    zenIds = deps.cache.readLastPayload()?.models.zen.map((m) => m.id) ?? [];
+  }
+
+  let pricing: PricingCatalog = deps.cache.readPricing() ?? { go: [], zen: [] };
   if (deps.cache.isPricingStale(now)) {
     try {
       pricing = await deps.fetchPricing();
@@ -84,17 +92,20 @@ export async function collect(deps: CollectorDeps, opts: CollectOptions = {}): P
     }
   }
 
-  const models = buildModels(ids, pricing).sort(byQuotaDesc);
+  const go = buildModels(goIds, pricing.go, true).sort(byQuotaDesc);
+  const zen = buildModels(zenIds, pricing.zen, false);
 
   let picks = deps.cache.readLastPayload()?.picks ?? null;
   if (deps.cache.isPicksStale(now) || !picks) {
-    picks = picksFor(models, now);
+    picks = picksFor(go, now);
     deps.cache.setPicksComputedAt(now.toISOString());
   }
 
+  const models: Catalog = { go: tagPicks(go, picks), zen };
+
   const payload: Payload = {
     windows: usage,
-    models: tagPicks(models, picks),
+    models,
     picks,
     updatedAt: now.toISOString(),
     offline: false,

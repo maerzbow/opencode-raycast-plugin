@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { foldModels } from "../src/lib/catalog";
-import type { Model } from "../src/lib/types";
+import { foldCatalog, foldModels } from "../src/lib/catalog";
+import type { Catalog, Model } from "../src/lib/types";
 
 const model = (id: string): Model => ({ id, cost: null, modalities: null, quota: null, isPick: null });
 const models = [1, 2, 3, 4, 5].map((n) => model(`model-${n}`));
@@ -26,5 +26,21 @@ describe("foldModels", () => {
   it("handles an empty catalog", () => {
     expect(foldModels([], 3, "")).toEqual({ models: [], folded: 0 });
     expect(foldModels([], 3, "x")).toEqual({ models: [], folded: 0 });
+  });
+});
+
+describe("foldCatalog", () => {
+  const catalog: Catalog = { go: models, zen: models };
+
+  it("folds each product section independently", () => {
+    const views = foldCatalog(catalog, 3, "");
+    expect(views.go).toEqual({ models: models.slice(0, 3), folded: 2 });
+    expect(views.zen).toEqual({ models: models.slice(0, 3), folded: 2 });
+  });
+
+  it("unfolds both sections when searching", () => {
+    const views = foldCatalog(catalog, 3, "model-4");
+    expect(views.go.folded).toBe(0);
+    expect(views.zen.folded).toBe(0);
   });
 });

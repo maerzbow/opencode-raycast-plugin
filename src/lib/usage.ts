@@ -13,7 +13,8 @@ export interface Preferences {
   maxModels?: string;
 }
 
-const BASE_URL = "https://opencode.ai/zen/go/v1";
+const GO_BASE_URL = "https://opencode.ai/zen/go/v1";
+const ZEN_BASE_URL = "https://opencode.ai/zen/v1";
 const MODELS_DEV = "https://models.dev/api.json";
 const AUTH_JSON = join(homedir(), ".local/share/opencode/auth.json");
 
@@ -27,8 +28,9 @@ function makeDeps(): CollectorDeps {
   const storage = createSyncedStorage();
   return {
     resolveKey: () => resolveGoKey({ authJsonPath: AUTH_JSON, prefKey: getPreferenceValues<Preferences>().goKey ?? null }),
-    fetchUsage: (key) => fetchUsage(key, BASE_URL),
-    fetchCatalog: () => fetchCatalog(BASE_URL),
+    fetchUsage: (key) => fetchUsage(key, GO_BASE_URL),
+    fetchGoCatalog: () => fetchCatalog(GO_BASE_URL),
+    fetchZenCatalog: () => fetchCatalog(ZEN_BASE_URL),
     fetchPricing: () => fetchPricing(MODELS_DEV),
     cache: new UsageCache(storage),
     now: () => new Date(),

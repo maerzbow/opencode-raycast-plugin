@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_POLICY, UsageCache } from "../src/lib/cache";
-import type { Payload, PricingModel } from "../src/lib/types";
+import type { Payload, PricingCatalog, PricingModel } from "../src/lib/types";
 import { MemoryStorage } from "./helpers/memory-storage";
 
 const T0 = new Date("2026-09-08T10:00:00Z");
@@ -13,7 +13,7 @@ function payload(updatedAt: string): Payload {
       weekly: { status: "ok", percent: 31, resetsAt: "x" },
       monthly: { status: "ok", percent: 18, resetsAt: "x" },
     },
-    models: [],
+    models: { go: [], zen: [] },
     picks: { stretch: null, bestValue: null, computedAt: updatedAt },
     updatedAt,
     offline: false,
@@ -30,8 +30,21 @@ describe("last payload", () => {
 
   it("returns null on corrupt stored JSON", () => {
     const storage = new MemoryStorage();
-    storage.setItem("ocg.lastPayload", "{oops");
+    storage.setItem("ocg.lastPayload.v2", "{oops");
     expect(new UsageCache(storage).readLastPayload()).toBeNull();
+  });
+
+  it("rejects a legacy flat-shape payload instead of crashing", () => {
+    const storage = new MemoryStorage();
+    const legacy = { windows: {}, models: [], picks: {}, updatedAt: "x", offline: false };
+    storage.setItem("ocg.lastPayload.v2", JSON.stringify(legacy));
+    expect(new UsageCache(storage).readLastPayload()).toBeNull();
+  });
+
+  it("rejects a pricing entry missing the zen slice", () => {
+    const storage = new MemoryStorage();
+    storage.setItem("ocg.pricing.v2", JSON.stringify({ go: [], fetchedAt: "x" }));
+    expect(new UsageCache(storage).readPricing()).toBeNull();
   });
 });
 
@@ -43,16 +56,20 @@ describe("pricing TTL", () => {
 
   it("is stale only after the 24h TTL", () => {
     const cache = new UsageCache(new MemoryStorage());
-    cache.writePricing([], T0.toISOString());
+    cache.writePricing({ go: [], zen: [] }, T0.toISOString());
     expect(cache.isPricingStale(new Date(T0.getTime() + 23 * HOUR))).toBe(false);
     expect(cache.isPricingStale(new Date(T0.getTime() + 25 * HOUR))).toBe(true);
   });
 
-  it("round-trips pricing models", () => {
+  it("round-trips pricing catalogs", () => {
     const cache = new UsageCache(new MemoryStorage());
-    const models: PricingModel[] = [{ id: "m1", cost: { input: 1, output: 2, cacheRead: 0 }, modalities: null }];
-    cache.writePricing(models, T0.toISOString());
-    expect(cache.readPricing()?.models[0].id).toBe("m1");
+    const pricing: PricingCatalog = {
+      go: [{ id: "m1", cost: { input: 1, output: 2, cacheRead: 0 }, modalities: null }],
+      zen: [{ id: "m2", cost: { input: 3, output: 4, cacheRead: 0 }, modalities: null }],
+    };
+    cache.writePricing(pricing, T0.toISOString());
+    expect(cache.readPricing()?.go[0].id).toBe("m1");
+    expect(cache.readPricing()?.zen[0].id).toBe("m2");
   });
 });
 
