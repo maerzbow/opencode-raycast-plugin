@@ -107,7 +107,7 @@ export default function Command() {
   const refresh = () => mutate(collectUsage(true), { shouldRevalidateAfter: false });
 
   if (!data) {
-    return <List isLoading={isLoading} searchBarPlaceholder="Loading opencode usage…" />;
+    return <List isLoading={isLoading} searchBarPlaceholder="Loading Opencode Info…" />;
   }
 
   if (!data.ok) {
@@ -126,7 +126,7 @@ export default function Command() {
       filtering={true}
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models, limits, picks…"
-      navigationTitle="opencode usage"
+      navigationTitle="Opencode Info"
     >
       {payload.offline && <List.Item icon={Icon.Cloud} title="Offline · showing last-known data" />}
       <List.Section title="Go limits">

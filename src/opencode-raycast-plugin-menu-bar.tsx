@@ -63,7 +63,7 @@ export default function Command() {
   };
 
   return (
-    <MenuBarExtra icon={{ source: "menubar-icon.png" }} tooltip="opencode usage">
+    <MenuBarExtra icon={{ source: "menubar-icon.png" }} tooltip="Opencode Info">
       {renderContent()}
     </MenuBarExtra>
   );

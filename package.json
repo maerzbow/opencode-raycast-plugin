@@ -1,23 +1,23 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "opencode-raycast-plugin",
-  "title": "opencode usage",
-  "description": "opencode usage — limit windows, model catalog, and daily picks.",
+  "title": "Opencode Info",
+  "description": "Opencode Info — limit windows, model catalog, and daily picks.",
   "icon": "icon.png",
   "author": "maerzbow",
   "license": "MIT",
   "commands": [
     {
       "name": "opencode-raycast-plugin",
-      "title": "opencode usage",
-      "description": "opencode usage: limit windows, model catalog, and daily picks.",
+      "title": "Opencode Info",
+      "description": "Opencode Info: limit windows, model catalog, and daily picks.",
       "mode": "view",
       "icon": "icon.png"
     },
     {
       "name": "opencode-raycast-plugin-menu-bar",
-      "title": "opencode usage",
-      "description": "opencode usage in the menu bar.",
+      "title": "Opencode Info",
+      "description": "Opencode Info in the menu bar.",
       "mode": "menu-bar",
       "icon": "menubar-icon.png",
       "interval": "60s"
