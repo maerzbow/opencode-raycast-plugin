@@ -4,7 +4,12 @@ import type { PickKind, Usage } from "./types";
 
 export function progressIcon(pct: number): Icon {
   const step = Math.min(4, Math.max(1, Math.round(pct / 25)));
-  return [Icon.CircleProgress25, Icon.CircleProgress50, Icon.CircleProgress75, Icon.CircleProgress100][step - 1];
+  return [
+    Icon.CircleProgress25,
+    Icon.CircleProgress50,
+    Icon.CircleProgress75,
+    Icon.CircleProgress100,
+  ][step - 1];
 }
 
 export interface WindowRow {
@@ -28,9 +33,18 @@ export function windowRows(windows: Usage, now: Date): WindowRow[] {
   }));
 }
 
-export const PICK_LABEL: Record<PickKind, string> = { stretch: "Stretch", "best-value": "Best value" };
-export const PICK_ICON: Record<PickKind, Icon> = { stretch: Icon.Star, "best-value": Icon.StarCircle };
-export const PICK_COLOR: Record<PickKind, Color> = { stretch: Color.Green, "best-value": Color.Blue };
+export const PICK_LABEL: Record<PickKind, string> = {
+  stretch: "Stretch",
+  "best-value": "Best value",
+};
+export const PICK_ICON: Record<PickKind, Icon> = {
+  stretch: Icon.Star,
+  "best-value": Icon.StarCircle,
+};
+export const PICK_COLOR: Record<PickKind, Color> = {
+  stretch: Color.Green,
+  "best-value": Color.Blue,
+};
 
 export function pickLabel(kind: PickKind): string {
   return PICK_LABEL[kind];

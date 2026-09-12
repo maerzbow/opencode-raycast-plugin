@@ -1,54 +1,30 @@
-# opencode-raycast-plugin
+# Opencode Info
 
-A [Raycast](https://www.raycast.com) extension for macOS that surfaces your [opencode](https://opencode.ai) usage in two places:
+Track your [OpenCode Go](https://opencode.ai) usage from Raycast — the three limit windows, the live model catalog, and the daily picks — in a full view and a menu-bar command.
 
-- **Full view** — a normal Raycast command.
-- **Menu-bar command** — the OpenCode logo as a pill in the macOS menu bar, refreshed every 60 seconds.
+## Setup
 
-It reports on the opencode product family. Today that is **OpenCode Go** — the subscription surface — and future opencode features may join under the same extension identity.
+You need an **active OpenCode Go subscription** — the extension surfaces subscription usage, so there's nothing to see without one.
 
-This extension is based on the idea of the omarchy-opencode-usage KDE Plasma widget by ardfard, which surfaces the same OpenCode Go usage data. Its GitHub page is https://github.com/ardfard/omarchy-opencode-usage.
+Then paste your **OpenCode Go API key** into the extension preferences:
+
+1. Open Raycast → Extensions → **Opencode Info** → Preferences.
+2. Enter your API key in the **API key** field.
+
+The extension reads the key from preferences and fetches your usage, the model catalog, and current pricing from opencode's public endpoints. Your key never leaves this Mac.
 
 ## Features
 
-- **Limit windows** — the three OpenCode Go usage windows (rolling 5h, weekly, monthly), each with a used-percent and reset time.
-- **Model catalog** — the live list of OpenCode Go models with current $/M pricing, sortable by cost, quota, or name.
-- **Picks** — daily model recommendations (stretch quota and best value) computed from current pricing.
-- **Quota** — per-model estimated request capacity for the rolling 5h window, plugin-estimated.
-- **Failure classes** — distinct error states for no key, bad key (401), missing entitlement (403), and offline; offline keeps the last-known data.
+- **Limit windows** — rolling 5h, weekly, and monthly usage with a used-percent and reset time.
+- **Model catalog** — the live OpenCode Go and OpenCode Zen model list with current $/M pricing, sortable by cost, quota, or name.
+- **Picks** — daily recommendations (stretch quota and best value) computed from current pricing.
+- **Quota** — per-model estimated request capacity for the rolling 5h window.
+- **Menu bar** — the OpenCode logo as a pill in the menu bar, refreshed every 60 seconds.
 
-## Status
+## Notes
 
-**In development.** This extension is not yet published to the Raycast Store. It works against the OpenCode Go subscription surface, so you need an active subscription (and a Go key) to see data.
-
-## Development
-
-This is a standard Raycast extension (React + TypeScript).
-
-```sh
-npm install
-npm run dev     # open in Raycast development mode
-```
-
-Useful commands:
-
-| Command        | What it does                          |
-| -------------- | ------------------------------------- |
-| `npm run dev`  | Launch the extension in Raycast dev mode |
-| `npm run build`| Build the production bundle           |
-| `npm run typecheck` | Type-check with `tsc --noEmit`   |
-| `npm test`     | Run the Vitest test suite             |
-
-### Contributing
-
-Contributions are welcome. To contribute:
-
-1. Fork the repository and create a feature branch.
-2. Make your change, keeping the extension's domain language consistent (see `CONTEXT.md`).
-3. Run `npm run typecheck` and `npm test` before submitting.
-4. Open a pull request describing what you changed and why.
-
-Please report bugs and feature requests as GitHub issues. This is a small project, so expect maintainers to review and merge changes directly.
+- This extension surfaces the opencode product family; today that is **OpenCode Go**, and future opencode features may join under the same extension identity.
+- Inspired by the omarchy-opencode-usage KDE Plasma widget by ardfard (https://github.com/ardfard/omarchy-opencode-usage).
 
 ## License
 

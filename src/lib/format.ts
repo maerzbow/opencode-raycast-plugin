@@ -23,7 +23,8 @@ export function countdown(resetsAt: string, now: Date): string {
   if (minutes < 60) return `resets in ${minutes}m`;
   const hours = Math.floor(minutes / 60);
   const remMinutes = minutes % 60;
-  if (hours < 24) return `resets in ${hours}h${remMinutes ? ` ${remMinutes}m` : ""}`;
+  if (hours < 24)
+    return `resets in ${hours}h${remMinutes ? ` ${remMinutes}m` : ""}`;
   const days = Math.floor(hours / 24);
   const remHours = hours % 24;
   return `resets in ${days}d ${remHours}h`;

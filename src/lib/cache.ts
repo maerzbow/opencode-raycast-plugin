@@ -41,15 +41,19 @@ function readJson<T>(raw: string | null): T | null {
 
 function isCatalog(v: unknown): v is { go: unknown[]; zen: unknown[] } {
   return (
-    typeof v === "object" && v !== null &&
-    Array.isArray((v as { go?: unknown }).go) && Array.isArray((v as { zen?: unknown }).zen)
+    typeof v === "object" &&
+    v !== null &&
+    Array.isArray((v as { go?: unknown }).go) &&
+    Array.isArray((v as { zen?: unknown }).zen)
   );
 }
 
 function isPricingEntry(v: unknown): v is PricingEntry {
   return (
-    typeof v === "object" && v !== null &&
-    Array.isArray((v as { go?: unknown }).go) && Array.isArray((v as { zen?: unknown }).zen) &&
+    typeof v === "object" &&
+    v !== null &&
+    Array.isArray((v as { go?: unknown }).go) &&
+    Array.isArray((v as { zen?: unknown }).zen) &&
     typeof (v as { fetchedAt?: unknown }).fetchedAt === "string"
   );
 }
@@ -76,13 +80,19 @@ export class UsageCache {
   }
 
   writePricing(pricing: PricingCatalog, fetchedAt: string): void {
-    this.storage.setItem(KEYS.pricing, JSON.stringify({ ...pricing, fetchedAt }));
+    this.storage.setItem(
+      KEYS.pricing,
+      JSON.stringify({ ...pricing, fetchedAt }),
+    );
   }
 
   isPricingStale(now: Date): boolean {
     const entry = this.readPricing();
     if (!entry) return true;
-    return now.getTime() - new Date(entry.fetchedAt).getTime() > this.policy.pricingTtlMs;
+    return (
+      now.getTime() - new Date(entry.fetchedAt).getTime() >
+      this.policy.pricingTtlMs
+    );
   }
 
   setPicksComputedAt(iso: string): void {
@@ -96,6 +106,9 @@ export class UsageCache {
   }
 
   isUsageStale(payload: Payload, now: Date): boolean {
-    return now.getTime() - new Date(payload.updatedAt).getTime() > this.policy.usageTtlMs;
+    return (
+      now.getTime() - new Date(payload.updatedAt).getTime() >
+      this.policy.usageTtlMs
+    );
   }
 }

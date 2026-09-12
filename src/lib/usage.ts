@@ -1,7 +1,5 @@
 import { getPreferenceValues } from "@raycast/api";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import { resolveGoKey } from "./auth";
+import { resolveApiKey } from "./auth";
 import { fetchCatalog, fetchPricing, fetchUsage } from "./api";
 import { UsageCache } from "./cache";
 import { collect, type CollectorDeps } from "./collector";
@@ -9,14 +7,13 @@ import { createSyncedStorage } from "./storage";
 import type { CollectResult } from "./types";
 
 export interface Preferences {
-  goKey?: string;
+  apiKey?: string;
   maxModels?: string;
 }
 
 const GO_BASE_URL = "https://opencode.ai/zen/go/v1";
 const ZEN_BASE_URL = "https://opencode.ai/zen/v1";
 const MODELS_DEV = "https://models.dev/api.json";
-const AUTH_JSON = join(homedir(), ".local/share/opencode/auth.json");
 
 export function maxModelsFromPreferences(): number {
   const raw = getPreferenceValues<Preferences>().maxModels;
@@ -27,7 +24,8 @@ export function maxModelsFromPreferences(): number {
 function makeDeps(): CollectorDeps {
   const storage = createSyncedStorage();
   return {
-    resolveKey: () => resolveGoKey({ authJsonPath: AUTH_JSON, prefKey: getPreferenceValues<Preferences>().goKey ?? null }),
+    resolveKey: () =>
+      Promise.resolve(resolveApiKey(getPreferenceValues<Preferences>().apiKey)),
     fetchUsage: (key) => fetchUsage(key, GO_BASE_URL),
     fetchGoCatalog: () => fetchCatalog(GO_BASE_URL),
     fetchZenCatalog: () => fetchCatalog(ZEN_BASE_URL),

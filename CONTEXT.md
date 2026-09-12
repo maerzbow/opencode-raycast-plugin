@@ -5,7 +5,7 @@ A Raycast extension for macOS that surfaces the user's opencode usage: limit win
 ## Language
 
 **opencode-raycast-plugin**:
-The extension's identifier (package and command names, repo name). Its display name is **opencode usage**.
+The extension's identifier (package and command names, repo name). Its display name is **Opencode Info**.
 _Avoid_: OpenCode Go as the extension's name
 
 **OpenCode Go**:
@@ -19,12 +19,12 @@ _Avoid_: zed, when you mean OpenCode Zen
 **Product**:
 The dimension that distinguishes the opencode-provided surfaces the extension catalogs — Go and Zen. Not to be confused with **Surface**, which means the full view vs the menu bar.
 
-**Go key**:
-The OpenCode Go credential used to authenticate against the OCG API.
-_Avoid_: API key, token, secret
+**API key**:
+The OpenCode Go credential used to authenticate against the OCG API, entered by the user in the extension's Preferences.
+_Avoid_: Go key, token, secret
 
 **auth.json**:
-The opencode credentials file at `~/.local/share/opencode/auth.json`; the Go key lives under `opencode-go.key` and is the extension's primary key source.
+The opencode credentials file at `~/.local/share/opencode/auth.json`. **Not read by the extension** — the API key comes from Preferences.
 _Avoid_: config, settings file
 
 **Limit windows**:

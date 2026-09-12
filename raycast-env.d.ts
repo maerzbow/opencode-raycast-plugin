@@ -8,8 +8,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** Go key (fallback) - OpenCode Go key. Only used when ~/.local/share/opencode/auth.json has no opencode-go entry. */
-  "goKey"?: string,
+  /** API key - Your OpenCode Go API key. */
+  "apiKey": string,
   /** Max catalog rows - How many models to show before folding into "other". */
   "maxModels": string
 }

@@ -2,9 +2,12 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "opencode-raycast-plugin",
   "title": "Opencode Info",
-  "description": "Opencode Info — limit windows, model catalog, and daily picks.",
+  "description": "Track OpenCode Go usage from the menu bar — limit windows, model catalog, and daily picks.",
   "icon": "icon.png",
-  "author": "maerzbow",
+  "author": "markus_merzinger",
+  "categories": ["Developer Tools"],
+  "platforms": ["macOS"],
+  "keywords": ["opencode", "usage", "subscription", "models", "quota", "limits", "go", "zen"],
   "license": "MIT",
   "commands": [
     {
@@ -25,11 +28,11 @@
   ],
   "preferences": [
     {
-      "name": "goKey",
-      "title": "Go key (fallback)",
-      "description": "OpenCode Go key. Only used when ~/.local/share/opencode/auth.json has no opencode-go entry.",
+      "name": "apiKey",
+      "title": "API key",
+      "description": "Your OpenCode Go API key.",
       "type": "password",
-      "required": false
+      "required": true
     },
     {
       "name": "maxModels",
@@ -41,17 +44,23 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^2.2.1",
+    "@raycast/api": "^2.3.1",
     "@raycast/utils": "^2.3.1"
   },
   "scripts": {
     "dev": "ray develop",
     "build": "ray build -e dist",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "publish": "npx @raycast/api@latest publish"
   },
   "devDependencies": {
+    "@raycast/eslint-config": "^2.2.0",
     "@types/node": "^22.10.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
