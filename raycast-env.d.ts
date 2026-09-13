@@ -8,7 +8,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** API key - Your OpenCode Go API key. */
+  /** API Key - Your OpenCode Go API key. */
   "apiKey": string,
   /** Max catalog rows - How many models to show before folding into "other". */
   "maxModels": string
